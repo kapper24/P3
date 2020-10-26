@@ -61,7 +61,6 @@ void RehabilitationGame::update()
 				else if (player.ydir < 0) {
 					player.ydir -= 1;
 				}
-				std::cout << "x: " <<x << "y " << y << std::endl;
 				UpdateGameObject(asteroids[i]);
 				srand(time(NULL) + i);
 				if ((player.DestR.x - asteroids[i].DestR.x) * (player.DestR.x - asteroids[i].DestR.x) + (player.DestR.y - asteroids[i].DestR.y) * (player.DestR.y - asteroids[i].DestR.y) < 50 * 50) {
@@ -73,6 +72,9 @@ void RehabilitationGame::update()
 			UpdateGameObject(player);
 		}
 		
+	}
+	else {
+		clean();
 	}
 	
 }

@@ -6,6 +6,7 @@
 class RehabilitationGame
 {
 public:
+	bool  startGame = false;
 	struct GameObject {
 		std::string name;
 		SDL_Texture* Sprite;
@@ -34,7 +35,7 @@ private:
 	int mousecoordinatey;
 	int buttonplacemetx = 120;
 	int buttonplacementy = 120;
-	bool  startGame = false;
+	//bool  startGame = false;
 	bool  gameIsInitialized = false;
     SDL_Window* window;
 	

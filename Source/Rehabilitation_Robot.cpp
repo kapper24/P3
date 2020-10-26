@@ -8,9 +8,13 @@
 #include "CrustCrawlerKinematics.h"
 #include "RehabilitationGame.h"
 #include <SDL_ttf.h>
+
 void settings();
 int main()
 {
+	CrustCrawlerKinematics CCK;
+
+
     SDL_SetMainReady();
 	//variables to use for the robot
 	float armlength = 63;
@@ -147,11 +151,16 @@ int main()
 
 				if (mousecoordinatex < startplacementx + buttonw && mousecoordinatex > startplacementx && mousecoordinatey < buttonplacementy + buttonw && mousecoordinatey > buttonplacementy)
 				{
+					
 					SDL_DestroyWindow(window);
+					std::cout << CCK.InverseKinematics(CCK.ForwardKinematics(90, 90, 0, 90)).theta1 << std::endl;
+					std::cout << CCK.InverseKinematics(CCK.ForwardKinematics(90, 90, 0, 90)).theta2 << std::endl;
+					std::cout << CCK.InverseKinematics(CCK.ForwardKinematics(90, 90, 0, 90)).theta3 << std::endl;
+					std::cout << CCK.InverseKinematics(CCK.ForwardKinematics(90, 90, 0, 90)).theta4 << std::endl;
 					 RehabilitationGame game;
 					game.init("game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600);
 					 int i = 0;
-						while (true) {
+						while (game.startGame) {
 							
 						game.update();
 						game.render();
