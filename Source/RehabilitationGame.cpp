@@ -2,11 +2,41 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <vector>
+#include "CrustCrawlerKinematics.h"
+#include "SimpleSerial.h"
+#include <string>
 std::vector<RehabilitationGame::GameObject> asteroids;
 RehabilitationGame::GameObject player;
+CrustCrawlerKinematics CCK;
+CrustCrawlerKinematics::Angles TargetAngles;
+double currentPosX = 0;
+double currentPosY = 145;
+double currentPosZ = 210;
 SDL_Event event;
-void RehabilitationGame::init(const char* title, int posx, int posy, int width, int height)
+SimpleSerial serial("COM6",9600);
+int counter = 0;
+void RehabilitationGame::init(const char* title, int posx, int posy, int width, int height, MyoController &collector)
 {
+	
+	CrustCrawlerKinematics::Pos tempPos;
+	tempPos = CCK.ForwardKinematics(0, 45, 80, 180);
+	currentPosX = tempPos.x;
+	currentPosZ = tempPos.z;
+	currentPosY = tempPos.y;
+	TargetAngles = CCK.InverseKinematics(currentPosX, currentPosY, currentPosZ);
+
+	TargetAngles.theta1 += 90;
+	TargetAngles.theta2 += 180;
+	TargetAngles.theta3 += 180;
+	TargetAngles.theta4 += 180;
+
+	std::string message = "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
+		"2 " + std::to_string(int(TargetAngles.theta2)) + ":" +
+		"3 " + std::to_string(int(TargetAngles.theta3)) + ":" +
+		"4 " + std::to_string(int(TargetAngles.theta4)) + ":";
+	std::cout << message << std::endl;
+	serial.writeString(message);
+	
 	SDL_Init(SDL_INIT_EVERYTHING);
 	const int FlAGS = IMG_INIT_PNG;
 	IMG_Init(IMG_INIT_PNG);
@@ -24,13 +54,17 @@ void RehabilitationGame::init(const char* title, int posx, int posy, int width, 
 	}
 	std::cout << asteroids.size() << std::endl;
 	startGame = true;
+	SDL_Delay(3000);
 }
 
-void RehabilitationGame::update()
+void RehabilitationGame::update(MyoController& collector)
 {
+	counter++;
+	
 	if (startGame) {
+
 		if (!gameIsInitialized) {
-			initGameObject(player,0	,0,50,50,"SpaceShip.png","Player");
+			initGameObject(player,400,300,50,50,"SpaceShip.png","Player");
 			for (int i = 0; i < asteroids.size(); i++)
 			{
 				srand(time(NULL)+i*i);
@@ -39,17 +73,23 @@ void RehabilitationGame::update()
 				std::cout << "init Asteroid: " << i << std::endl;
 			}
 			gameIsInitialized = true;
+			
 		}
 		else {
+			// In each iteration of our main loop, we run the Myo event loop for a set number of milliseconds.
+		// In this case, we wish to update our display 20 times a second, so we run for 1000/20 milliseconds.
+			
+
 			
 			
 			for (int i = 0; i < asteroids.size(); i++) {
+				/*
 				float x = asteroids[i].DestR.x - player.DestR.x;
 				float y = asteroids[i].DestR.y - player.DestR.y;
+				*/
 				
-				player.xdir = x/sqrt(x*x + y*y);
-				player.ydir = y/sqrt(x*x+y*y);
-				if (x > 0) {
+				
+				/*if (x > 0) {
 					player.xdir += 1;
 				}
 				else if (x < 0) {
@@ -60,7 +100,7 @@ void RehabilitationGame::update()
 				}
 				else if (player.ydir < 0) {
 					player.ydir -= 1;
-				}
+				}*/
 				UpdateGameObject(asteroids[i]);
 				srand(time(NULL) + i);
 				if ((player.DestR.x - asteroids[i].DestR.x) * (player.DestR.x - asteroids[i].DestR.x) + (player.DestR.y - asteroids[i].DestR.y) * (player.DestR.y - asteroids[i].DestR.y) < 50 * 50) {
@@ -69,6 +109,102 @@ void RehabilitationGame::update()
 					asteroids[i].DestR.y = rand() % 550 + 0, 50, 50;
 				}
 			}	
+
+			if (collector.currentPose == myo::Pose::waveIn) {
+				player.xdir = -1;
+				player.ydir = 0;
+				double targetX, targetY, targetZ;
+				targetX = currentPosX + player.xdir;
+				targetY = currentPosY;
+				targetZ = currentPosZ + player.ydir;
+
+				
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+					currentPosX -= player.xdir;
+					currentPosZ -= player.ydir;
+				}
+				else {
+					player.xdir = 0;
+					player.ydir = 0;
+				}
+				
+
+			}
+			else if (collector.currentPose == myo::Pose::waveOut) {
+				player.xdir = 1;
+				player.ydir = 0;
+				double targetX, targetY, targetZ;
+				targetX = currentPosX + player.xdir;
+				targetY = currentPosY;
+				targetZ = currentPosZ + player.ydir;
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+					currentPosX -= player.xdir;
+					currentPosZ -= player.ydir;
+				}
+				else {
+					player.xdir = 0;
+					player.ydir = 0;
+				}
+			}
+			else if (collector.currentPose == myo::Pose::fist) {
+				player.xdir = 0;
+				player.ydir = 1;
+				double targetX, targetY, targetZ;
+				targetX = currentPosX + player.xdir;
+				targetY = currentPosY;
+				targetZ = currentPosZ + player.ydir;
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+					currentPosX -= player.xdir;
+					currentPosZ -= player.ydir;
+				}
+				else {
+					player.xdir = 0;
+					player.ydir = 0;
+				}
+			}
+			else if (collector.currentPose == myo::Pose::fingersSpread) {
+				player.xdir = 0;
+				player.ydir = -1;
+				double targetX, targetY, targetZ;
+				targetX = currentPosX + player.xdir;
+				targetY = currentPosY;
+				targetZ = currentPosZ + player.ydir;
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ <= 360 * 360) {
+					currentPosX -= player.xdir;
+					currentPosZ -= player.ydir;
+				}
+				else {
+					player.xdir = 0;
+					player.ydir = 0;
+				}
+
+			}
+			else {
+				player.xdir = 0;
+				player.ydir = 0;
+			}
+			TargetAngles = CCK.InverseKinematics(currentPosX, currentPosY, currentPosZ);
+			std::string message = "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
+				"2 " + std::to_string(int(TargetAngles.theta2)) + ":" +
+				"3 " + std::to_string(int(TargetAngles.theta3)) + ":" +
+				"4 " + std::to_string(int(TargetAngles.theta4)) + ":";
+			std::cout << message << std::endl;
+			TargetAngles.theta1 += 90;
+			TargetAngles.theta2 += 180;
+			TargetAngles.theta3 += 180;
+			TargetAngles.theta4 += 180;
+
+			message = "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
+				"2 " + std::to_string(int(TargetAngles.theta2)) + ":" +
+				"3 " + std::to_string(int(TargetAngles.theta3)) + ":" +
+				"4 " + std::to_string(int(TargetAngles.theta4)) + ":";
+			//std::cout << message << std::endl;
+			if (counter == 10) {
+				serial.writeString(message);
+				counter = 0;
+			}
+			
+			
 			UpdateGameObject(player);
 		}
 		
