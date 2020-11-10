@@ -68,7 +68,7 @@ void RehabilitationGame::update(MyoController& collector)
 			for (int i = 0; i < asteroids.size(); i++)
 			{
 				srand(time(NULL)+i*i);
-				initGameObject(asteroids[i], rand() % 650 + 50, rand() % 550 + 0, 50, 50, "Asteroid.png", "Asteroid");
+				initGameObject(asteroids[i], rand() % 450 + 150, rand() % 450 + 150, 50, 50, "Asteroid.png", "Asteroid");
 				SDL_Delay(100);
 				std::cout << "init Asteroid: " << i << std::endl;
 			}
@@ -104,13 +104,13 @@ void RehabilitationGame::update(MyoController& collector)
 				UpdateGameObject(asteroids[i]);
 				srand(time(NULL) + i);
 				if ((player.DestR.x - asteroids[i].DestR.x) * (player.DestR.x - asteroids[i].DestR.x) + (player.DestR.y - asteroids[i].DestR.y) * (player.DestR.y - asteroids[i].DestR.y) < 50 * 50) {
-					asteroids[i].DestR.x = rand() % 650 + 50;
+					asteroids[i].DestR.x = rand() % 450 + 150;
 					SDL_Delay(300);
-					asteroids[i].DestR.y = rand() % 550 + 0, 50, 50;
+					asteroids[i].DestR.y = rand() % 450 + 150, 50, 50;
 				}
 			}	
-
-			if (collector.currentPose == myo::Pose::waveIn) {
+			    
+			if (collector.Direction == MyoController::Left) {
 				player.xdir = -1;
 				player.ydir = 0;
 				double targetX, targetY, targetZ;
@@ -119,61 +119,65 @@ void RehabilitationGame::update(MyoController& collector)
 				targetZ = currentPosZ + player.ydir;
 
 				
-				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 340 * 340) {
 					currentPosX -= player.xdir;
 					currentPosZ -= player.ydir;
 				}
 				else {
+					
 					player.xdir = 0;
 					player.ydir = 0;
 				}
 				
 
 			}
-			else if (collector.currentPose == myo::Pose::waveOut) {
+			else if (collector.Direction == MyoController::Right) {
 				player.xdir = 1;
 				player.ydir = 0;
 				double targetX, targetY, targetZ;
 				targetX = currentPosX + player.xdir;
 				targetY = currentPosY;
 				targetZ = currentPosZ + player.ydir;
-				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 340 * 340) {
 					currentPosX -= player.xdir;
 					currentPosZ -= player.ydir;
 				}
 				else {
+					
 					player.xdir = 0;
 					player.ydir = 0;
 				}
 			}
-			else if (collector.currentPose == myo::Pose::fist) {
+			else if (collector.Direction == MyoController::Down) {
 				player.xdir = 0;
 				player.ydir = 1;
 				double targetX, targetY, targetZ;
 				targetX = currentPosX + player.xdir;
 				targetY = currentPosY;
 				targetZ = currentPosZ + player.ydir;
-				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 360 * 360) {
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 340 * 340) {
 					currentPosX -= player.xdir;
 					currentPosZ -= player.ydir;
 				}
 				else {
+				
 					player.xdir = 0;
 					player.ydir = 0;
 				}
 			}
-			else if (collector.currentPose == myo::Pose::fingersSpread) {
+			else if (collector.Direction == MyoController::Up) {
 				player.xdir = 0;
 				player.ydir = -1;
 				double targetX, targetY, targetZ;
 				targetX = currentPosX + player.xdir;
 				targetY = currentPosY;
 				targetZ = currentPosZ + player.ydir;
-				if (targetX * targetX + targetY * targetY + targetZ * targetZ <= 360 * 360) {
+				if (targetX * targetX + targetY * targetY + targetZ * targetZ < 340 * 340) {
 					currentPosX -= player.xdir;
 					currentPosZ -= player.ydir;
 				}
 				else {
+					
 					player.xdir = 0;
 					player.ydir = 0;
 				}
@@ -184,16 +188,16 @@ void RehabilitationGame::update(MyoController& collector)
 				player.ydir = 0;
 			}
 			TargetAngles = CCK.InverseKinematics(currentPosX, currentPosY, currentPosZ);
-			std::string message = "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
+			std::string message = "";/* "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
 				"2 " + std::to_string(int(TargetAngles.theta2)) + ":" +
 				"3 " + std::to_string(int(TargetAngles.theta3)) + ":" +
 				"4 " + std::to_string(int(TargetAngles.theta4)) + ":";
-			std::cout << message << std::endl;
+			//std::cout << message << std::endl;*/
 			TargetAngles.theta1 += 90;
 			TargetAngles.theta2 += 180;
 			TargetAngles.theta3 += 180;
 			TargetAngles.theta4 += 180;
-
+			
 			message = "1 " + std::to_string(int(TargetAngles.theta1)) + ":" +
 				"2 " + std::to_string(int(TargetAngles.theta2)) + ":" +
 				"3 " + std::to_string(int(TargetAngles.theta3)) + ":" +
@@ -202,7 +206,10 @@ void RehabilitationGame::update(MyoController& collector)
 			if (counter == 10) {
 				serial.writeString(message);
 				counter = 0;
-			}
+				}
+				
+				
+			
 			
 			
 			UpdateGameObject(player);
@@ -250,8 +257,8 @@ void RehabilitationGame::UpdateGameObject(GameObject& gameObject)
 {
 		
 
-		gameObject.DestR.x += gameObject.xdir;
-		gameObject.DestR.y += gameObject.ydir;
+		gameObject.DestR.x += gameObject.xdir*2;
+		gameObject.DestR.y += gameObject.ydir*2;
 		gameObject.DestR.w = gameObject.Size.x;
 		gameObject.DestR.h = gameObject.Size.y;
 	

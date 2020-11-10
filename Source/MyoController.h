@@ -3,6 +3,17 @@
 class MyoController : public myo::DeviceListener
 {
 public:
+    int count = 0;
+    int averageEMG[8] = { 0,0,0,0,0,0,0,0 };
+    enum MyoState
+    {
+        Up,
+        Down,
+        Left,
+        Right,
+        Rest
+    };
+    MyoState Direction = MyoState::Rest;
     MyoController()
         : onArm(false), isUnlocked(false), currentPose()
     {
@@ -10,7 +21,7 @@ public:
     // onPose() is called whenever the Myo detects that the person wearing it has changed their pose, for example,
     // making a fist, or not making a fist anymore.
     void onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose);
-
+    void onEmgData(myo::Myo* myo, uint64_t timestamp, const int8_t* emg);
     // onLock() is called whenever Myo has become locked. No pose events will be sent until the Myo is unlocked again.
     void onLock(myo::Myo* myo, uint64_t timestamp);
     // onUnlock() is called whenever Myo has become unlocked, and will start delivering pose events.

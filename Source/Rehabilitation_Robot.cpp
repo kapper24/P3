@@ -29,6 +29,9 @@ int main()
 		// We've found a Myo.
 		std::cout << "Connected to a Myo armband!" << std::endl << std::endl;
 		themyo->unlock(myo::Myo::unlockHold);
+		// Next we enable EMG streaming on the found Myo.
+		themyo->setStreamEmg(myo::Myo::streamEmgEnabled);
+
 		// Next we construct an instance of our DeviceListener, so that we can register it with the Hub.
 		MyoController collector;
 		// Hub::addListener() takes the address of any object whose class inherits from DeviceListener, and will cause

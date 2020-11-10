@@ -9,7 +9,7 @@ CrustCrawlerKinematics::Pos CrustCrawlerKinematics::ForwardKinematics(double t1,
 	   { 0, 0, 0, 1 } };
 	double z = TargetMatrix(2, 3);
 	double y = TargetMatrix(1, 3);
-	t4 = (90 * PI/180 - t2 - t3) + atan((z - ShoulderHeightFromBase) / (ShoulderDistanceFromBase - y));
+	t4 = (90 * PI/180 - t2 - t3) + atan(abs((z - ShoulderHeightFromBase)) / abs((ShoulderDistanceFromBase - y)));
 	t1 *= PI / 180;
 	t2 *= PI / 180;
 	t3 *= PI / 180;
@@ -41,8 +41,7 @@ CrustCrawlerKinematics::Angles CrustCrawlerKinematics::InverseKinematics(double 
 	angles.theta1 = atan2(-x, y) * 180 / PI;
 	angles.theta2 = (90 * PI / 180 - phi1 - phi2) * 180 / PI;
 	angles.theta3 = 180 - (phi3) * 180 / PI;
-	angles.theta4 = (90 - angles.theta2 - angles.theta3) + atan((EEz - ShoulderHeightFromBase) / (ShoulderDistanceFromBase - EEy)) * 180 / PI;
-
+	angles.theta4 = (90 - angles.theta2 - angles.theta3) + (atan(abs((z - ShoulderHeightFromBase)) / abs((ShoulderDistanceFromBase - y)))*180/PI);
 	if (angles.theta2 < 10) {
 		angles.theta2 = 10;
 	}
@@ -55,12 +54,8 @@ CrustCrawlerKinematics::Angles CrustCrawlerKinematics::InverseKinematics(double 
 	else {
 		angles.theta3 = 180 - (phi3) * 180 / PI;
 	}
-	if (angles.theta4 < 10) {
-		angles.theta4 = 10;
-	}
-	else {
-		angles.theta4 = (90 - angles.theta2 - angles.theta3) + atan((EEz - ShoulderHeightFromBase) / (ShoulderDistanceFromBase - EEy)) * 180 / PI;
-	}
+	
+		//angles.theta4 = (90 * PI / 180 - angles.theta2 - angles.theta3) + atan(abs((z - ShoulderHeightFromBase)) / abs((ShoulderDistanceFromBase - y)));
 	
 	return angles;
 }

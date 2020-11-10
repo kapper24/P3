@@ -3,8 +3,8 @@
 class CrustCrawlerKinematics
 {
 public:
-	double ShoulderDistanceFromBase = -200;
-	double ShoulderHeightFromBase = -1000;
+	double ShoulderDistanceFromBase = 500;
+	double ShoulderHeightFromBase = 0;
 	struct Angles {
 		double theta1;
 		double theta2;
