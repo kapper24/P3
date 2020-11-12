@@ -20,34 +20,44 @@ void MyoController::onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)
 
 void MyoController::onEmgData(myo::Myo* myo, uint64_t timestamp, const int8_t* emg)
 {
+    if (count < 20) {
+        std::vector<int> temp;
+        for (int i = 0; i < 8; i++)
+        {
 
-    //emgFile << timestamp;
-    for (size_t i = 0; i < 8; i++) {
-        /* emgFile << ',' << static_cast<int>(emg[i]);*/
-
-
-        averageEMG[i] += abs(static_cast<int>(emg[i]));
-        if (count == 99) {
-            averageEMG[i] = averageEMG[i] / 100;
-
-           // std::cout << "emg " << i << ": " << averageEMG[i] << " ";
+            temp.push_back(abs(static_cast<long int>(emg[i])));
+        }
+        CurrentEMG.push_back(temp);
+        count++;
+    }
+    else if (CurrentEMG.size() == 20) {
+        std::vector<int> temp;
+        for (int i = 0; i < 8; i++)
+        {
+            int sum = 0;
+            for (int j = 0; j < 20; j++)
+            {
+                sum += CurrentEMG[j][i];
+            }
+            averageEMG[i] = sum / 20;
+            temp.push_back(abs(static_cast<long int>(emg[i])));
 
 
         }
-    }
-    if (count == 99) {
 
-        float up = averageEMG[4] / (1 + averageEMG[1]);
-        float right = averageEMG[3] / (1 + averageEMG[7]);
+        CurrentEMG.push_back(temp);
+        CurrentEMG.erase(CurrentEMG.begin());
+        float up = averageEMG[4] * 1.5 / (1 + averageEMG[1] + averageEMG[7]);
+        float right = averageEMG[3] * 2.7 / (1 + averageEMG[7] + averageEMG[1]);
         float left = (averageEMG[0] + averageEMG[7]) / (averageEMG[5] + 1);
-        float down = (0.5f * (averageEMG[0] + averageEMG[1] + averageEMG[2])) / (1 + averageEMG[5] + averageEMG[6]);
+        float down = (1 * (averageEMG[0] + averageEMG[1] + averageEMG[2])) / (1 + averageEMG[5] + averageEMG[6]);
         float rest = (averageEMG[4] + averageEMG[5] + averageEMG[6] + averageEMG[7]) / 20;
         if (up + right + left + down <= 5) {
             Direction = Rest;
         }
         else if (up > right && up > left && up > down)
         {
-           Direction = Up;
+            Direction = Up;
         }
         else if (left > right && left > up && left > down)
         {
@@ -61,14 +71,7 @@ void MyoController::onEmgData(myo::Myo* myo, uint64_t timestamp, const int8_t* e
         {
             Direction = Down;
         }
-
-        
-        count = 0;
-        std::cout << std::endl;
     }
-    count++;
-
-
 }
 
 void MyoController::onLock(myo::Myo* myo, uint64_t timestamp)

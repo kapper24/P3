@@ -1,10 +1,12 @@
 #pragma once
 #include <myo/myo.hpp>
+
 class MyoController : public myo::DeviceListener
 {
 public:
     int count = 0;
-    int averageEMG[8] = { 0,0,0,0,0,0,0,0 };
+    std::vector<std::vector<int>> CurrentEMG;
+    int averageEMG[8];
     enum MyoState
     {
         Up,
