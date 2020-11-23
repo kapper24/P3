@@ -1,0 +1,10 @@
+Proposal 2: Robot-assisted upper limb rehabilitation controlled by EMG signals  
+
+Background: Cerebrovascular accident or stroke is one of the reasons for motor disability, particularly in the old population. More than 0.7 million people are affected by stroke in United States every year and lost their lower or upper limb functionality. Unfortunately, one third of stroke survivors get only a poor functionality after five years of their injury. Therefore, stroke-related problems influence both patients’ and their families’ life by attenuating their ability to manipulate the surrounding. Recently, robotic systems attract more attention in rehabilitation for patients with motor impairments.  
+
+Robotic devices such as robotic arms can be controlled by surface electromyography (sEMG) electrodes attached to the surface of the skin. Preserved ability of the muscles can provide control input for these systems.  
+
+Purpose: In this project, student groups will control the Crustcrawler Pro series arm with using two channels of surface EMG. The EMG electrodes can be placed on superficial muscles. The robotic arm has six degree of freedom (DOF), but will have to be controlled by two EMG channels, so a control system must be developed to control the robotic arm based on the patient conditions. It is completely up to the student groups to design, implement and test the control system for the arm.  
+
+Contents: The control of the arm will be made using an Arduino microcontroller. Arduino and EMG hardware have wireless communication because of electrical safety. Student groups are also responsible to design and implement appropriate safety measures so that the user of the robot arm (patient, test subject) or any other nearby will not be harmed by the arm, i.e. the arms needs to be stopped in case of excessive resistance. The project goal could be completing a task successfully such as drinking from a cup with the robotic arm fixed on a table.  
+ 
