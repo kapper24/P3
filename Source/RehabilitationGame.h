@@ -3,13 +3,15 @@
 #include <armadillo>
 #include <SDL_image.h>
 #include <myo/myo.hpp>
+#include <SDL_ttf.h>
 #include "MyoController.h"
 
 class RehabilitationGame
 {
 public:
 	MyoController collector;
-	bool  startGame = false;
+	bool startGame = false;
+	int NumberOfPoints = 1;
 	struct GameObject {
 		std::string name;
 		SDL_Texture* Sprite;
@@ -21,6 +23,7 @@ public:
 		int xdir = 0;
 		int ydir = 0;
 	};
+	
 	void init(const char* title, int posx, int posy, int width, int height, MyoController &collector);
 	void update(MyoController& collector);
 	void render();
@@ -29,19 +32,14 @@ public:
 	void RenderGameObject(GameObject& gameObject);
 	void clean();
 	SDL_Renderer* renderer;
-
 	
+	
+
+	void GameSettings();
 private:
-	int buttonw = 100;
-	int buttonh = 30;
-	int mousecoordinatex;
-	int mousecoordinatey;
-	int buttonplacemetx = 120;
-	int buttonplacementy = 120;
 	//bool  startGame = false;
 	bool  gameIsInitialized = false;
     SDL_Window* window;
-	
 	SDL_Texture* background;
 
 
