@@ -14,7 +14,7 @@ double currentPosX = 0;
 double currentPosY = 147;
 double currentPosZ = 210;
 SDL_Event event;
-SimpleSerial serial("COM3",9600);
+SimpleSerial serial("COM5",9600);
 int counter = 0;
 void RehabilitationGame::init(const char* title, int posx, int posy, int width, int height, MyoController &collector)
 {
@@ -270,58 +270,146 @@ void RehabilitationGame::GameSettings()
 {
 	SDL_Window* settingswindow = SDL_CreateWindow("Game Settings", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 360, SDL_WINDOW_SHOWN);
 	SDL_Renderer* settingsrenderer = SDL_CreateRenderer(settingswindow, -1, 0);
-	SDL_SetRenderDrawColor(settingsrenderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+	//sdl surface img_load
+	// sdl texture
+	// render
+
+	SDL_SetRenderDrawColor(settingsrenderer, 0, 150, 255, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(settingsrenderer);
 	SDL_RenderPresent(settingsrenderer);
 	SDL_Rect GameSettingsHeight;
-	GameSettingsHeight.x = 94;
-	GameSettingsHeight.y = 60;
+	GameSettingsHeight.x = 84;
+	GameSettingsHeight.y = 45;
 	GameSettingsHeight.w = 181;
-	GameSettingsHeight.h = 60;
-	SDL_Rect GameSettingsHeightValue;
-	GameSettingsHeightValue.x = 276;
-	GameSettingsHeightValue.y = 60;
-	GameSettingsHeightValue.w = 113;
-	GameSettingsHeightValue.h = 60;
+	GameSettingsHeight.h = 50;
 	SDL_Rect GameSettingsDist;
-	GameSettingsDist.x = 94;
-	GameSettingsDist.y = 122;
+	GameSettingsDist.x = 84;
+	GameSettingsDist.y = 107;
 	GameSettingsDist.w = 181;
-	GameSettingsDist.h = 60;
-	SDL_Rect GameSettingsDistValue;
-	GameSettingsDistValue.x = 276;
-	GameSettingsDistValue.y = 122;
-	GameSettingsDistValue.w = 113;
-	GameSettingsDistValue.h = 60;
+	GameSettingsDist.h = 50;
 	SDL_Rect GameSettingsPoints;
-	GameSettingsPoints.x = 94;
-	GameSettingsPoints.y = 184;
+	GameSettingsPoints.x = 84;
+	GameSettingsPoints.y = 169;
 	GameSettingsPoints.w = 181;
-	GameSettingsPoints.h = 60;
-	SDL_Rect GameSettingsPointsValue;
-	GameSettingsPointsValue.x = 276;
-	GameSettingsPointsValue.y = 184;
-	GameSettingsPointsValue.w = 113;
-	GameSettingsPointsValue.h = 60;
+	GameSettingsPoints.h = 50;
 	SDL_Rect GameSettingsDone;
 	GameSettingsDone.x = 145;
 	GameSettingsDone.y = 270;
 	GameSettingsDone.w = 208;
 	GameSettingsDone.h = 40;
-	
-	SDL_SetRenderDrawColor(settingsrenderer, 192, 192, 192, SDL_ALPHA_OPAQUE);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsHeight);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsPoints);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsDist);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsDone);
 
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsHeightValue);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsPointsValue);
-	SDL_RenderFillRect(settingsrenderer, &GameSettingsDistValue);
-	
+	SDL_Rect Shoulder[3];
+	SDL_Rect Point[3];
+	SDL_Rect Dis[3];
+	SDL_Rect ShoulderText[3];
+	SDL_Rect PointText[3];
+	SDL_Rect DisText[3];
+
 	TTF_Init();
 	TTF_Font* TextFont = TTF_OpenFont("Roboto-Black.ttf", 16);
 	SDL_Color black = { 0, 0, 0 };
+
+	SDL_SetRenderDrawColor(settingsrenderer, 192, 192, 192, SDL_ALPHA_OPAQUE);
+	for (int i = 0; i < 3; i++)
+	{
+		Shoulder[i].x = 300 + 50*i;
+		Shoulder[i].y = 60;
+		Shoulder[i].w = 10;
+		Shoulder[i].h = 10;
+
+		Dis[i].x = 300 + 50 * i;
+		Dis[i].y = 118;
+		Dis[i].w = 10;
+		Dis[i].h = 10;
+
+		Point[i].x = 300 + 50 * i;
+		Point[i].y = 184;
+		Point[i].w = 10;
+		Point[i].h = 10;
+
+		ShoulderText[i].x = 300 + 50 * i;
+		ShoulderText[i].y = 45;
+		ShoulderText[i].w = 10;
+		ShoulderText[i].h = 10;
+
+		DisText[i].x = 300 + 50 * i;
+		DisText[i].y = 105;
+		DisText[i].w = 10;
+		DisText[i].h = 10;
+
+		PointText[i].x = 300 + 50 * i;
+		PointText[i].y = 170;
+		PointText[i].w = 10;
+		PointText[i].h = 10;
+
+		SDL_SetRenderDrawColor(settingsrenderer, 192, 192, 192, SDL_ALPHA_OPAQUE);
+		
+		SDL_RenderFillRect(settingsrenderer, &Shoulder[i]);
+		SDL_RenderFillRect(settingsrenderer, &Dis[i]);
+		SDL_RenderFillRect(settingsrenderer, &Point[i]);
+		SDL_RenderPresent(settingsrenderer);
+		
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		SDL_Surface* Text = TTF_RenderText_Solid(TextFont, "2", black);
+		SDL_Texture* Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+		switch (i)
+		{
+		case 0:
+			Text = TTF_RenderText_Solid(TextFont, "2", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &ShoulderText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "2", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &DisText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "2", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &PointText[i]);
+			break;
+
+		case 1:
+			Text = TTF_RenderText_Solid(TextFont, "4", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &ShoulderText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "4", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &DisText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "4", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &PointText[i]);
+			break;
+
+		case 2:
+			Text = TTF_RenderText_Solid(TextFont, "6", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &ShoulderText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "6", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &DisText[i]);
+
+			Text = TTF_RenderText_Solid(TextFont, "6", black);
+			Texture = SDL_CreateTextureFromSurface(settingsrenderer, Text);
+			SDL_RenderCopy(settingsrenderer, Texture, NULL, &PointText[i]);
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+	SDL_RenderFillRect(settingsrenderer, &GameSettingsDone);
+	
+
+	SDL_RenderFillRect(settingsrenderer, &GameSettingsHeight);
+	SDL_RenderFillRect(settingsrenderer, &GameSettingsPoints);
+	SDL_RenderFillRect(settingsrenderer, &GameSettingsDist);
 
 	SDL_Surface* HeightText = TTF_RenderText_Solid(TextFont, "  Shoulder Height : ", black);
 	SDL_Texture* HeightTexture = SDL_CreateTextureFromSurface(settingsrenderer, HeightText);
@@ -340,27 +428,6 @@ void RehabilitationGame::GameSettings()
 	SDL_RenderCopy(settingsrenderer, DoneTexture, NULL, &GameSettingsDone);
 	std::stringstream text;
 	text << "" << CCK.ShoulderHeightFromBase;
-	
-	SDL_Surface* HeightValueText = TTF_RenderText_Solid(TextFont, text.str().c_str(), black);
-	SDL_Texture* HeightValueTexture = SDL_CreateTextureFromSurface(settingsrenderer, HeightValueText);
-	SDL_RenderCopy(settingsrenderer, HeightValueTexture, NULL, &GameSettingsHeightValue);
-	
-	text.str("");
-	text << "" << CCK.ShoulderDistanceFromBase;
-	SDL_Surface* DistValueText = TTF_RenderText_Solid(TextFont, text.str().c_str(), black);
-	SDL_Texture* DistValueTexture = SDL_CreateTextureFromSurface(settingsrenderer, DistValueText);
-	SDL_RenderCopy(settingsrenderer, DistValueTexture, NULL, &GameSettingsDistValue);
-
-	text.str("");
-	text << "" << NumberOfPoints;
-	SDL_Surface* PointsValueText = TTF_RenderText_Solid(TextFont, text.str().c_str(), black);
-	SDL_Texture* PointsValueTexture = SDL_CreateTextureFromSurface(settingsrenderer, PointsValueText);
-	SDL_RenderCopy(settingsrenderer, PointsValueTexture, NULL, &GameSettingsPointsValue);
-
-	SDL_Surface* DoneValueText = TTF_RenderText_Solid(TextFont, "  Done  ", black);
-	SDL_Texture* DoneValueTexture = SDL_CreateTextureFromSurface(settingsrenderer, DoneText);
-	SDL_RenderCopy(settingsrenderer, DoneValueTexture, NULL, &GameSettingsDone);
-
 
 	SDL_RenderPresent(settingsrenderer);
 	int MousePosX, MousePosY;
@@ -377,27 +444,24 @@ void RehabilitationGame::GameSettings()
 			{
 				endsettings = true;
 			}
-			else if (MousePosX > GameSettingsHeightValue.x && MousePosX < GameSettingsHeightValue.w + GameSettingsHeightValue.x && MousePosY > GameSettingsHeightValue.y && MousePosY < GameSettingsHeightValue.h + GameSettingsHeightValue.y) {
-			text.str("100");
-			SDL_Surface* HeightValueText = TTF_RenderText_Solid(TextFont, text.str().c_str(), black);
-			SDL_Texture* HeightValueTexture = SDL_CreateTextureFromSurface(settingsrenderer, HeightValueText);
-			SDL_RenderCopy(settingsrenderer, HeightValueTexture, NULL, &GameSettingsHeightValue);
-			SDL_RenderPresent(settingsrenderer);
-			SDL_StartTextInput();
-
-			SDL_Event event;
-			SDL_WaitEvent(&event);
-			switch (event.type) {
-				case SDL_TEXTINPUT:
-
-					break;
-			}
-			}
-			else if (MousePosX > GameSettingsDistValue.x && MousePosX < GameSettingsDistValue.w + GameSettingsDistValue.x && MousePosY > GameSettingsDistValue.y && MousePosY < GameSettingsDistValue.h + GameSettingsDistValue.y) {
-
-			}
-			else if (MousePosX > GameSettingsPointsValue.x && MousePosX < GameSettingsPointsValue.w + GameSettingsPointsValue.x && MousePosY > GameSettingsPointsValue.y && MousePosY < GameSettingsPointsValue.h + GameSettingsPointsValue.y)
-			{
+			else {
+				for (int i = 0; i < 4; i++)
+				{
+					SDL_SetRenderDrawColor(settingsrenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+					if (MousePosX > Shoulder[i].x && MousePosX < Shoulder[i].w + Shoulder[i].x && MousePosY > Shoulder[i].y && MousePosY < Shoulder[i].h + Shoulder[i].y)
+					{
+						SDL_RenderFillRect(settingsrenderer, &Shoulder[i]);
+					}
+					else if (MousePosX > Dis[i].x && MousePosX < Dis[i].w + Dis[i].x && MousePosY > Dis[i].y && MousePosY < Dis[i].h + Dis[i].y)
+					{
+						SDL_RenderFillRect(settingsrenderer, &Dis[i]);
+					}
+					else if (MousePosX > Point[i].x && MousePosX < Point[i].w + Point[i].x && MousePosY > Point[i].y && MousePosY < Point[i].h + Point[i].y)
+					{
+						SDL_RenderFillRect(settingsrenderer, &Point[i]);
+					}
+				}
+				SDL_RenderPresent(settingsrenderer);
 
 			}
 			break;

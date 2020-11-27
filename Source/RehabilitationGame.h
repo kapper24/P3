@@ -32,6 +32,13 @@ public:
 	void RenderGameObject(GameObject& gameObject);
 	void clean();
 	SDL_Renderer* renderer;
+
+	struct Button {
+		int x; 
+		int y; 
+		int w = 10; 
+		int h = 10; 
+	};
 	
 	
 
