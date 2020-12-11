@@ -10,7 +10,17 @@ Simulink & Simscape (including Simscape multibody)
 Cpp...
 
 # Required Cpp packages
-Install the following Cpp packages...
+for the computer:
+armadillo 10.1.2
+SDL 2.0.12
+SDL_ttf 2
+SDL_image 2
+SDL_font 2
+myo.h
+
+for the arduino:
+arduino
+dynamixel_serial
 
 # Simscape Preperation
 Open simulink -> open "program..." -> model something... ->
